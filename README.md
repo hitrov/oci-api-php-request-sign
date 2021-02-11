@@ -1,5 +1,7 @@
 # Oracle Cloud Infrastructure API requests sign with PHP
 
+[![Build Status](https://travis-ci.org/hitrov/oci-api-php-request-sign.svg?branch=main)](https://travis-ci.org/hitrov/oci-api-php-request-sign)
+
 - [Installation](#installation)
 - [Preparing credentials](#preparing-credentials)
 - [Basic usage](#basic-usage)
