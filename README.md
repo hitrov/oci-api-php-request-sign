@@ -11,6 +11,8 @@
 - [Manual generation steps](#manual-generation-steps)
 - [Inspiration](#inspiration)
 
+If you prefer article style, here's a link to [Medium](https://hitrov.medium.com/creating-mini-php-sdk-to-sign-oracle-cloud-infrastructure-api-requests-d91a224c7008?sk=5b4405c1124bfeac30a370630fd94126)
+
 ## Installation
 ```bash
 composer require hitrov/oci-api-php-request-sign
