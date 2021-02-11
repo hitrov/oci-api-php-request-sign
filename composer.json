@@ -1,0 +1,35 @@
+{
+  "name": "hitrov/oci-api-php-request-sign",
+  "description": "This package generates proper HTTP headers to sign Oracle Cloud Infrastructure API requests",
+  "keywords": [
+    "oci",
+    "api",
+    "request",
+    "signature"
+  ],
+  "homepage": "https://github.com/hitrov/oci-api-php-request-sign",
+  "authors": [
+    {
+      "name": "Alexander Hitrov",
+      "email": "github.com@hitrov.com"
+    }
+  ],
+  "version": "1.0",
+  "license": "MIT",
+  "require": {
+    "php": "^7.4",
+    "ext-openssl": "*"
+  },
+  "scripts": {
+    "test": "php vendor/phpunit/phpunit/phpunit tests"
+  },
+  "autoload": {
+    "psr-4": {
+      "Hitrov\\OCI\\": "src/Hitrov/OCI",
+      "Hitrov\\Test\\": "tests/Hitrov/Test"
+    }
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^9"
+  }
+}

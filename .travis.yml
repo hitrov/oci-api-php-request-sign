@@ -1,0 +1,24 @@
+# Config file for https://travis-ci.org/
+
+language: php
+
+# Define the php versions against we want to test our code
+php:
+  - 7.4
+
+install:
+  - travis_retry composer install --no-interaction --no-suggest
+
+# Testing the app (see phpunit.xml) for configs, generating Code Coverage report
+script:
+  - composer test
+
+# Monitor only these branches
+branches:
+  only:
+    - master
+
+# You can delete the cache using travis-ci web interface
+cache:
+  directories:
+    - $HOME/.composer/cache
