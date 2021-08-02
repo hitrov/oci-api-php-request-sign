@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Hitrov\OCI;
 
@@ -13,7 +14,6 @@ class Signer
     const OCI_USER_ID = 'OCI_USER_ID';
     const OCI_KEY_FINGERPRINT = 'OCI_KEY_FINGERPRINT';
     const OCI_PRIVATE_KEY_FILENAME = 'OCI_PRIVATE_KEY_FILENAME';
-    const OCI_PRIVATE_KEY = 'OCI_PRIVATE_KEY';
 
     const SIGNING_HEADER_DATE = 'date';
     const SIGNING_HEADER_REQUEST_TARGET = '(request-target)';
@@ -29,6 +29,9 @@ class Signer
     private string $ociKeyFingerPrint;
     private string $ociPrivateKeyLocation;
 
+    /**
+     * @var array<string, string>
+     */
     private array $headersToSign;
 
     private KeyProviderInterface $keyProvider;
@@ -42,19 +45,19 @@ class Signer
      */
     public function __construct(?string $ociTenancyId = null, ?string $ociUserId = null, ?string $keyFingerPrint = null, ?string $privateKeyLocation = null)
     {
-        $this->ociTenancyId = $ociTenancyId ?? getenv(self::OCI_TENANCY_ID);
-        $this->ociUserId = $ociUserId ?? getenv(self::OCI_USER_ID);
-        $this->ociKeyFingerPrint = $keyFingerPrint ?? getenv(self::OCI_KEY_FINGERPRINT);
-        $this->ociPrivateKeyLocation = $privateKeyLocation ?? getenv(self::OCI_PRIVATE_KEY_FILENAME);
+        $this->ociTenancyId = $ociTenancyId ?? getenv(self::OCI_TENANCY_ID) ?: '';
+        $this->ociUserId = $ociUserId ?? getenv(self::OCI_USER_ID) ?: '';
+        $this->ociKeyFingerPrint = $keyFingerPrint ?? getenv(self::OCI_KEY_FINGERPRINT) ?: '';
+        $this->ociPrivateKeyLocation = $privateKeyLocation ?? getenv(self::OCI_PRIVATE_KEY_FILENAME) ?: '';
     }
 
     /**
-     * @param string|null $url
+     * @param string $url
      * @param string $method
      * @param string|null $body
      * @param string|null $contentType
      * @param string|null $dateString
-     * @return array
+     * @return string[]
      * @throws PrivateKeyFileNotFoundException
      * @throws SignerValidateException
      * @throws SigningValidationFailedException
@@ -115,7 +118,7 @@ class Signer
     }
 
     /**
-     * @param string|null $url
+     * @param string $url
      * @param string $method
      * @param string|null $body
      * @param string|null $contentType
@@ -184,7 +187,7 @@ class Signer
     /**
      * @param KeyProviderInterface $keyProvider
      */
-    public function setKeyProvider(KeyProviderInterface $keyProvider)
+    public function setKeyProvider(KeyProviderInterface $keyProvider): void
     {
         $this->keyProvider = $keyProvider;
     }
@@ -240,7 +243,7 @@ class Signer
      * @param string|null $body
      * @param string|null $contentType
      * @param string|null $dateString
-     * @return array
+     * @return array<string, string>
      */
     private function getHeadersToSign(string $url, string $method, ?string $body, ?string $contentType, string $dateString = null): array
     {
@@ -339,10 +342,8 @@ class Signer
             throw new SignerValidateException('OCI User ID, tenancy ID, key fingerprint and private key filename are required.');
         }
 
-        if ($this->ociPrivateKeyLocation) {
-            if (!filter_var($this->ociPrivateKeyLocation, FILTER_VALIDATE_URL) && !file_exists($this->ociPrivateKeyLocation)) {
-                throw new PrivateKeyFileNotFoundException("Private key file does not exist: {$this->ociPrivateKeyLocation}");
-            }
+        if (!filter_var($this->ociPrivateKeyLocation, FILTER_VALIDATE_URL) && !file_exists($this->ociPrivateKeyLocation)) {
+            throw new PrivateKeyFileNotFoundException("Private key file does not exist: {$this->ociPrivateKeyLocation}");
         }
     }
 

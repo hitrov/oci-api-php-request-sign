@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Hitrov\Test;
 
@@ -240,7 +241,7 @@ EOT;
         $this->assertEquals($expected, $actual);
     }
 
-    public function testInvalidUrl()
+    public function testInvalidUrl(): void
     {
         $signer = new Signer(
             MockKeyProvider::OCI_TENANCY_ID, MockKeyProvider::OCI_USER_ID, MockKeyProvider::OCI_KEY_FINGERPRINT, null
@@ -252,7 +253,7 @@ EOT;
         );
     }
 
-    public function testPrivateKeyLocationUrl()
+    public function testPrivateKeyLocationUrl(): void
     {
         $signer = new Signer(
             MockKeyProvider::OCI_TENANCY_ID,
@@ -267,7 +268,7 @@ EOT;
         $this->assertNotEmpty($headers);
     }
 
-    public function testNoOciDataProvided()
+    public function testNoOciDataProvided(): void
     {
         $filename = implode(DIRECTORY_SEPARATOR, [__DIR__, '..', '..', 'resources', 'privatekey.pem']);
         $signer = new Signer(
@@ -280,7 +281,7 @@ EOT;
         );
     }
 
-    public function testNoPrivateKey()
+    public function testNoPrivateKey(): void
     {
         $signer = new Signer(
             MockKeyProvider::OCI_TENANCY_ID, MockKeyProvider::OCI_USER_ID, MockKeyProvider::OCI_KEY_FINGERPRINT
@@ -292,7 +293,7 @@ EOT;
         );
     }
 
-    public function testPrivateKeyNotFound()
+    public function testPrivateKeyNotFound(): void
     {
         $signer = new Signer(
             MockKeyProvider::OCI_TENANCY_ID, MockKeyProvider::OCI_USER_ID, MockKeyProvider::OCI_KEY_FINGERPRINT, 'no-such-file'
