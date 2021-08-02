@@ -24,10 +24,10 @@ class Signer
 
     const CONTENT_TYPE_APPLICATION_JSON = 'application/json';
 
-    private ?string $ociUserId;
-    private ?string $ociTenancyId;
-    private ?string $ociKeyFingerPrint;
-    private ?string $ociPrivateKeyFilename;
+    private string $ociTenancyId;
+    private string $ociUserId;
+    private string $ociKeyFingerPrint;
+    private string $ociPrivateKeyLocation;
 
     private array $headersToSign;
 
@@ -38,14 +38,14 @@ class Signer
      * @param string|null $ociTenancyId
      * @param string|null $ociUserId
      * @param string|null $keyFingerPrint
-     * @param string|null $privateKeyFilename
+     * @param string|null $privateKeyLocation
      */
-    public function __construct(?string $ociTenancyId = null, ?string $ociUserId = null, ?string $keyFingerPrint = null, ?string $privateKeyFilename = null)
+    public function __construct(?string $ociTenancyId = null, ?string $ociUserId = null, ?string $keyFingerPrint = null, ?string $privateKeyLocation = null)
     {
-        $this->ociTenancyId = $ociTenancyId ?: getenv(self::OCI_TENANCY_ID);
-        $this->ociUserId = $ociUserId ?: getenv(self::OCI_USER_ID);
-        $this->ociKeyFingerPrint = $keyFingerPrint ?: getenv(self::OCI_KEY_FINGERPRINT);
-        $this->ociPrivateKeyFilename = $privateKeyFilename ?: getenv(self::OCI_PRIVATE_KEY_FILENAME);
+        $this->ociTenancyId = $ociTenancyId ?? getenv(self::OCI_TENANCY_ID);
+        $this->ociUserId = $ociUserId ?? getenv(self::OCI_USER_ID);
+        $this->ociKeyFingerPrint = $keyFingerPrint ?? getenv(self::OCI_KEY_FINGERPRINT);
+        $this->ociPrivateKeyLocation = $privateKeyLocation ?? getenv(self::OCI_PRIVATE_KEY_FILENAME);
     }
 
     /**
@@ -210,12 +210,16 @@ class Signer
             return $this->keyProvider->getPrivateKey();
         }
 
-        if ($this->ociPrivateKeyFilename) {
-            if (!file_exists($this->ociPrivateKeyFilename)) {
-                throw new PrivateKeyFileNotFoundException();
+        if ($this->ociPrivateKeyLocation) {
+            if (filter_var($this->ociPrivateKeyLocation, FILTER_VALIDATE_URL)) {
+                return file_get_contents($this->ociPrivateKeyLocation);
             }
 
-            return file_get_contents($this->ociPrivateKeyFilename);
+            if (!file_exists($this->ociPrivateKeyLocation)) {
+                throw new PrivateKeyFileNotFoundException("Private key file does not exist: {$this->ociPrivateKeyLocation}");
+            }
+
+            return file_get_contents($this->ociPrivateKeyLocation);
         }
 
         return null;
@@ -330,13 +334,15 @@ class Signer
             empty($this->ociUserId) ||
             empty($this->ociTenancyId) ||
             empty($this->ociKeyFingerPrint) ||
-            empty($this->ociPrivateKeyFilename)
+            empty($this->ociPrivateKeyLocation)
         ) {
             throw new SignerValidateException('OCI User ID, tenancy ID, key fingerprint and private key filename are required.');
         }
 
-        if ($this->ociPrivateKeyFilename && !file_exists($this->ociPrivateKeyFilename)) {
-            throw new PrivateKeyFileNotFoundException("Private key file does not exist: {$this->ociPrivateKeyFilename}");
+        if ($this->ociPrivateKeyLocation) {
+            if (!filter_var($this->ociPrivateKeyLocation, FILTER_VALIDATE_URL) && !file_exists($this->ociPrivateKeyLocation)) {
+                throw new PrivateKeyFileNotFoundException("Private key file does not exist: {$this->ociPrivateKeyLocation}");
+            }
         }
     }
 

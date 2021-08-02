@@ -252,6 +252,21 @@ EOT;
         );
     }
 
+    public function testPrivateKeyLocationUrl()
+    {
+        $signer = new Signer(
+            MockKeyProvider::OCI_TENANCY_ID,
+            MockKeyProvider::OCI_USER_ID,
+            MockKeyProvider::OCI_KEY_FINGERPRINT,
+            getenv('OCI_PRIVATE_KEY_URL'),
+        );
+
+        $headers = $signer->getHeaders(
+            self::TEST_URL, 'GET', null, Signer::CONTENT_TYPE_APPLICATION_JSON, self::DATE_STRING
+        );
+        $this->assertNotEmpty($headers);
+    }
+
     public function testNoOciDataProvided()
     {
         $filename = implode(DIRECTORY_SEPARATOR, [__DIR__, '..', '..', 'resources', 'privatekey.pem']);

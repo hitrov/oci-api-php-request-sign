@@ -26,3 +26,5 @@ jobs:
       - name: Run test suite
         run: |
           vendor/bin/phpunit --color tests/
+        env:
+          OCI_PRIVATE_KEY_URL: ${{ secrets.OCI_PRIVATE_KEY_URL }}
