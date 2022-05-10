@@ -111,9 +111,6 @@ class Signer
             throw new SigningValidationFailedException('Cannot verify signature.');
         }
 
-        // deprecated
-        openssl_free_key($privateKeyId);
-
         return $signatureBase64;
     }
 
