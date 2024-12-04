@@ -62,7 +62,7 @@ class Signer
      * @throws SignerValidateException
      * @throws SigningValidationFailedException
      */
-    public function getHeaders(string $url, string $method = 'GET', ?string $body = null, ?string $contentType = self::CONTENT_TYPE_APPLICATION_JSON, string $dateString = null): array
+    public function getHeaders(string $url, string $method = 'GET', ?string $body = null, ?string $contentType = self::CONTENT_TYPE_APPLICATION_JSON, ?string $dateString = null): array
     {
         $this->validateParameters($url);
 
@@ -242,7 +242,7 @@ class Signer
      * @param string|null $dateString
      * @return array<string, string>
      */
-    private function getHeadersToSign(string $url, string $method, ?string $body, ?string $contentType, string $dateString = null): array
+    private function getHeadersToSign(string $url, string $method, ?string $body, ?string $contentType, ?string $dateString = null): array
     {
         if (isset($this->headersToSign)) {
             return $this->headersToSign;
