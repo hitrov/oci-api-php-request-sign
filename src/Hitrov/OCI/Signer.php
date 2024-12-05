@@ -62,7 +62,7 @@ class Signer
      * @throws SignerValidateException
      * @throws SigningValidationFailedException
      */
-    public function getHeaders(string $url, string $method = 'GET', ?string $body = null, ?string $contentType = self::CONTENT_TYPE_APPLICATION_JSON, string $dateString = null): array
+    public function getHeaders(string $url, string $method = 'GET', ?string $body = null, ?string $contentType = self::CONTENT_TYPE_APPLICATION_JSON, ?string $dateString = null): array
     {
         $this->validateParameters($url);
 
@@ -216,7 +216,7 @@ class Signer
             }
 
             if (!file_exists($this->ociPrivateKeyLocation)) {
-                throw new PrivateKeyFileNotFoundException("Private key file does not exist: {$this->ociPrivateKeyLocation}");
+                throw new PrivateKeyFileNotFoundException("Private key file does not exist: $this->ociPrivateKeyLocation");
             }
 
             return file_get_contents($this->ociPrivateKeyLocation);
@@ -242,7 +242,7 @@ class Signer
      * @param string|null $dateString
      * @return array<string, string>
      */
-    private function getHeadersToSign(string $url, string $method, ?string $body, ?string $contentType, string $dateString = null): array
+    private function getHeadersToSign(string $url, string $method, ?string $body, ?string $contentType, ?string $dateString = null): array
     {
         if (isset($this->headersToSign)) {
             return $this->headersToSign;
@@ -340,7 +340,7 @@ class Signer
         }
 
         if (!filter_var($this->ociPrivateKeyLocation, FILTER_VALIDATE_URL) && !file_exists($this->ociPrivateKeyLocation)) {
-            throw new PrivateKeyFileNotFoundException("Private key file does not exist: {$this->ociPrivateKeyLocation}");
+            throw new PrivateKeyFileNotFoundException("Private key file does not exist: $this->ociPrivateKeyLocation");
         }
     }
 
@@ -348,7 +348,7 @@ class Signer
      * @param string|null $body
      * @return int
      */
-    private function getContentLength(?string $body)
+    private function getContentLength(?string $body): int
     {
         return strlen($body);
     }
