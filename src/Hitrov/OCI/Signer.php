@@ -231,7 +231,7 @@ class Signer
      */
     private function shouldHashBody(string $method): bool
     {
-        return in_array($method, ['POST', 'PUT', 'PATCH']);
+        return in_array(strtoupper($method), ['POST', 'PUT', 'PATCH']);
     }
 
     /**
