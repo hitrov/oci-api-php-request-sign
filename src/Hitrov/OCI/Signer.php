@@ -244,10 +244,6 @@ class Signer
      */
     private function getHeadersToSign(string $url, string $method, ?string $body, ?string $contentType, ?string $dateString = null): array
     {
-        if (isset($this->headersToSign)) {
-            return $this->headersToSign;
-        }
-
         $parsed = parse_url($url);
 
         $headersMap = [];
