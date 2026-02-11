@@ -252,7 +252,8 @@ class Signer
             switch ($headerName) {
                 case self::SIGNING_HEADER_DATE:
                     if (!$dateString) {
-                        $dateString = gmdate(DATE_RFC7231);
+                        $dateString = (new DateTime('now', new DateTimeZone('UTC')))
+                            ->format('D, d M Y H:i:s \G\M\T');
                     }
                     $headersMap[self::SIGNING_HEADER_DATE] = $dateString;
                     break;
