@@ -241,6 +241,30 @@ EOT;
         $this->assertEquals($expected, $actual);
     }
 
+    public function testGetHeadersWithCurrentDate(): void
+    {
+        $filename = implode(DIRECTORY_SEPARATOR, [__DIR__, '..', '..', 'resources', 'privatekey.pem']);
+
+        $signer = $this->getMockBuilder(Signer::class)
+            ->setConstructorArgs([MockKeyProvider::OCI_TENANCY_ID, MockKeyProvider::OCI_USER_ID, MockKeyProvider::OCI_KEY_FINGERPRINT, $filename])
+            ->onlyMethods(['getCurrentDate'])
+            ->getMock();
+
+        $signer->method('getCurrentDate')
+            ->willReturn(self::DATE_STRING);
+
+        $keyId = $signer->getKeyId();
+
+        $authorization = $this->getAuthorizationHeader($keyId, self::GENERIC_HEADERS, self::EXPECTED_SIGNATURE);
+        $expected = [
+            'date: ' . self::DATE_STRING,
+            'host: iaas.us-phoenix-1.oraclecloud.com',
+            $authorization
+        ];
+        $actual = $signer->getHeaders(self::TEST_URL);
+        $this->assertEquals($expected, $actual);
+    }
+
     public function testInvalidUrl(): void
     {
         $signer = new Signer(
@@ -353,7 +377,9 @@ EOT;
     {
         $class = new ReflectionClass($className);
         $method = $class->getMethod($methodName);
-        $method->setAccessible(true);
+        if (PHP_VERSION_ID < 80100) {
+            $method->setAccessible(true);
+        }
 
         return $method;
     }
