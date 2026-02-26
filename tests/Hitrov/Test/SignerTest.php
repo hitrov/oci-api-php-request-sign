@@ -377,6 +377,9 @@ EOT;
     {
         $class = new ReflectionClass($className);
         $method = $class->getMethod($methodName);
+        if (PHP_VERSION_ID < 80100) {
+            $method->setAccessible(true);
+        }
 
         return $method;
     }
