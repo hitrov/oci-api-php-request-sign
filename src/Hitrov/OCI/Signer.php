@@ -24,6 +24,8 @@ class Signer
 
     const CONTENT_TYPE_APPLICATION_JSON = 'application/json';
 
+    private const DATE_FORMAT_RFC7231 = 'D, d M Y H:i:s \G\M\T';
+
     private string $ociTenancyId;
     private string $ociUserId;
     private string $ociKeyFingerPrint;
@@ -200,6 +202,10 @@ class Signer
         return "Authorization: Signature version=\"1\",keyId=\"$keyId\",algorithm=\"rsa-sha256\",headers=\"$signedHeaders\",signature=\"$signatureBase64\"";
     }
 
+    protected function getCurrentDate(): string {
+        return gmdate(self::DATE_FORMAT_RFC7231); // Thu, 05 Jan 2014 21:31:40 GMT
+    }
+
     /**
      * @return string
      * @throws PrivateKeyFileNotFoundException
@@ -252,7 +258,7 @@ class Signer
             switch ($headerName) {
                 case self::SIGNING_HEADER_DATE:
                     if (!$dateString) {
-                        $dateString = gmdate(DATE_RFC7231);
+                        $dateString = $this->getCurrentDate();
                     }
                     $headersMap[self::SIGNING_HEADER_DATE] = $dateString;
                     break;
